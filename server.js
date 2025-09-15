@@ -1,8 +1,10 @@
 const express = require("express");
+const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 
 const app = express();
+app.use(cors()); // allow requests from frontend
 app.use(express.json());
 
 // Load environment variables
@@ -25,7 +27,9 @@ let otps = {};
 // Route: request OTP
 app.post("/send-otp", async (req, res) => {
   const { email } = req.body;
-  if (!email) return res.status(400).json({ error: "Email is required" });
+  if (!email) {
+    return res.status(400).json({ error: "Email is required" });
+  }
 
   // Generate 6-digit OTP
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -41,7 +45,7 @@ app.post("/send-otp", async (req, res) => {
 
     res.json({ message: "OTP sent successfully" });
   } catch (err) {
-    console.error(err);
+    console.error("Email send error:", err);
     res.status(500).json({ error: "Failed to send OTP" });
   }
 });
@@ -49,7 +53,9 @@ app.post("/send-otp", async (req, res) => {
 // Route: verify OTP
 app.post("/verify-otp", (req, res) => {
   const { email, otp } = req.body;
-  if (!email || !otp) return res.status(400).json({ error: "Email and OTP are required" });
+  if (!email || !otp) {
+    return res.status(400).json({ error: "Email and OTP are required" });
+  }
 
   if (otps[email] === otp) {
     delete otps[email]; // remove once used
