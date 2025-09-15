@@ -1,9 +1,7 @@
 {
   "name": "mini-auth",
   "version": "1.0.0",
-  "description": "Lightweight OTP authentication service for Prep Genius",
   "main": "server.js",
-  "type": "module",
   "scripts": {
     "start": "node server.js"
   },
